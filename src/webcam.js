@@ -1,11 +1,11 @@
 import { createRef, useEffect, useMemo } from 'react'
 const { VideoTexture } = require('three')
 
-const video = document.createElement('video')
-
+export const video = createRef()
 let activated = createRef(false)
 
 export default function useWebcamTexture() {
+  if (!video.current) video.current = document.createElement('video')
   useEffect(() => {
     document.addEventListener('click', init)
 
@@ -13,14 +13,15 @@ export default function useWebcamTexture() {
       if (activated.current === true) return
 
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const constraints = { video: { width: 1280, height: 720, facingMode: 'user' } }
+        const constraints = { video: { width: 1280, height: 720, facingMode: 'environment' } }
 
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then(function (stream) {
             // apply the stream to the video element used in the texture
-            video.srcObject = stream
-            video.play()
+            video.current.srcObject = stream
+            video.current.play()
+
             activated.current = true
           })
           .catch(function (error) {
@@ -36,5 +37,5 @@ export default function useWebcamTexture() {
     }
   }, [])
 
-  return useMemo(() => new VideoTexture(video), [])
+  return useMemo(() => new VideoTexture(video.current), [])
 }

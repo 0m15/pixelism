@@ -98,7 +98,7 @@ export default function useFbo({ width = 512, height = 512, uniforms, name = 'FB
             float warp = snoise(pos.xyz*2.0+time*0.1)*0.0025;
             pos.xyz+=warp;
             //pos.y-=0.005;
-            pos.z+=0.0015;
+            pos.z+=0.0035;
 
             if (rand(vUv+time)>0.997) {
               pos = orig;

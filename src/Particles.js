@@ -4,14 +4,14 @@ import { BufferGeometry, BufferAttribute, DoubleSide } from 'three'
 import useFbo from './Fbo'
 import RenderShaderMaterial from './ParticlesMaterial'
 import useWebcamTexture from './webcam'
-const BUFFER_SIZE = 512
+const BUFFER_SIZE = 256
 
 function getRandomPoints(count) {
   var vertices = new Float32Array(count * 3)
 
   for (var i = 0; i < count; i++) {
     var i3 = i * 3
-    vertices[i3] = Math.random() * 2 - 1
+    vertices[i3] = Math.random() * 3 - 1.5
     vertices[i3 + 1] = Math.random() * 2 - 1
     vertices[i3 + 2] = Math.random() * 2 - 1
   }
@@ -49,7 +49,7 @@ export default function FboParticles() {
 
   useFrame(({ clock, mouse, camera }) => {
     points.current.material.uniforms.positions.value = renderTarget[0].texture
-    points.current.material.uniforms.map.value = map
+    if (clock.getElapsedTime() % 10) points.current.material.uniforms.map.value = map
 
     // update particles positions
     fbo.update({ renderer: gl, time: clock.getElapsedTime() })
@@ -58,7 +58,7 @@ export default function FboParticles() {
   return (
     <group>
       <mesh rotation={[0, 0, 0]} position={[0, 0, 0]}>
-        <planeBufferGeometry args={[3, 3]} attach="geometry" />
+        <planeBufferGeometry args={[3, 1.5]} attach="geometry" />
         <meshBasicMaterial transparent opacity={0.95} side={DoubleSide} map={map} attach="material" />
       </mesh>
       <points ref={points} position={[0, 0, 0]}>
