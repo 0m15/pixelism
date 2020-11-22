@@ -6,12 +6,10 @@ export default class RenderShaderMaterial extends ShaderMaterial {
       vertexShader: `
         uniform sampler2D positions;
         uniform float pointSize;
-        varying float a;
         varying vec2 vUv;
 
         vec2 screenspace(vec3 pos){
-          vec4 temp = vec4(pos, 1.0);
-          temp.xyz /= temp.w;
+          vec3 temp = pos;
           temp.xy = (0.5)+(temp.xy)*0.5;
           return temp.xy;
         }
@@ -24,11 +22,8 @@ export default class RenderShaderMaterial extends ShaderMaterial {
         }
         `,
       fragmentShader: `
-        uniform sampler2D positions;
         uniform sampler2D map;
-        uniform vec2 resolution;
         varying vec2 vUv;
-
         
         void main() {
           vec2 uv=vUv;
@@ -41,7 +36,6 @@ export default class RenderShaderMaterial extends ShaderMaterial {
       uniforms: {
         positions: { type: 't', value: null },
         pointSize: { type: 'f', value: 8 },
-        resolution: { value: [window.innerWidth, window.innerHeight] },
         map: { value: null }
       },
       transparent: true
